@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\BookRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -41,6 +43,12 @@ class Book
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $publishDate = null;
+
+    #[ORM\OneToMany(mappedBy: 'book', targetEntity: Review::class)]
+    private Collection $reviews;
+
+    #[ORM\Column]
+    private ?float $averageRating = null;
 
     public function getId(): ?int
     {
@@ -147,6 +155,7 @@ class Book
         $currentTimestamp = new \DateTime();
         $this->created = $currentTimestamp;
         $this->modified = $currentTimestamp;
+        $this->reviews = new ArrayCollection();
     }
 
     #[ORM\PreUpdate]
@@ -158,5 +167,47 @@ class Book
         if(is_null($this->getCreated())){
             $this->setCreated($currentTimestamp);
         }
+    }
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): self
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews->add($review);
+            $review->setBook($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): self
+    {
+        if ($this->reviews->removeElement($review)) {
+            // set the owning side to null (unless already changed)
+            if ($review->getBook() === $this) {
+                $review->setBook(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getAverageRating(): ?float
+    {
+        return $this->averageRating;
+    }
+
+    public function setAverageRating(float $averageRating): self
+    {
+        $this->averageRating = $averageRating;
+
+        return $this;
     }
 }
