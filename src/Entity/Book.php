@@ -8,43 +8,59 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource]
+#[ApiResource(
+    collectionOperations: ["get", "post"],
+    itemOperations: ["get", "put"],
+    normalizationContext: ["groups" => ['read']],
+    denormalizationContext: ["groups" => ['write']]
+)]
 class Book
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["read"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["read", "write"])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(["read", "write"])]
     private ?string $description = null;
 
     #[ORM\Column]
+    #[Groups(["read", "write"])]
     private ?bool $isPublished = null;
 
     #[ORM\Column]
+    #[Groups(["read", "write"])]
     private ?float $price = null;
 
     #[ORM\ManyToOne(inversedBy: 'books')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["read", "write"])]
     private ?Author $author = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(["read"])]
     private ?\DateTimeInterface $created = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(["read"])]
     private ?\DateTimeInterface $modified = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(["read", "write"])]
     private ?\DateTimeInterface $publishDate = null;
 
     #[ORM\OneToMany(mappedBy: 'book', targetEntity: Review::class)]
+    #[Groups(["read", "write"])]
     private Collection $reviews;
 
     #[ORM\Column]
