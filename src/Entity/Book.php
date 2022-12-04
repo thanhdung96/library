@@ -64,6 +64,7 @@ class Book
     private Collection $reviews;
 
     #[ORM\Column]
+    #[Groups(["read", "write"])]
     private ?float $averageRating = null;
 
     public function getId(): ?int
@@ -172,6 +173,7 @@ class Book
         $this->created = $currentTimestamp;
         $this->modified = $currentTimestamp;
         $this->reviews = new ArrayCollection();
+        $this->averageRating = 0;
     }
 
     #[ORM\PreUpdate]

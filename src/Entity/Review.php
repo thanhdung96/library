@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Entity\Book;
+use ApiPlatform\Metadata\Post;
 use App\Repository\ReviewRepository;
 use App\State\ReviewStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -19,7 +19,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     normalizationContext: ["groups" => ['read']],
     denormalizationContext: ["groups" => ['write']]
 )]
-#[Book(processor: ReviewStateProcessor::class)]
+#[Post(processor: ReviewStateProcessor::class)]
 class Review
 {
     #[ORM\Id]
