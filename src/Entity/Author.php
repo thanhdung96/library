@@ -14,7 +14,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     collectionOperations: ["get", "post"],
-    itemOperations: ["get", "put"],
+    itemOperations: ["get", "put", "patch"],
     normalizationContext: ["groups" => ['read']],
     denormalizationContext: ["groups" => ['write']]
 )]

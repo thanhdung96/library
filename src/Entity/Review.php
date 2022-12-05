@@ -13,13 +13,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource(
-    collectionOperations: ["get", "post"],
-    itemOperations: ["get", "put", "delete"],
-    normalizationContext: ["groups" => ['read']],
-    denormalizationContext: ["groups" => ['write']]
-)]
-#[Post(processor: ReviewStateProcessor::class)]
+#[
+    ApiResource(
+        collectionOperations: ["get", "post"],
+        itemOperations: ["get", "put", "delete", "patch"],
+        normalizationContext: ["groups" => ['read']],
+        denormalizationContext: ["groups" => ['write']]
+    )
+]
 class Review
 {
     #[ORM\Id]
